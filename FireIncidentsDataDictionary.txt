@@ -1,0 +1,38 @@
+Fire Incidents Data Dictionary.txt
+20 February 2019
+
+
+If you have any questions please contact:
+David Kulpanowski
+Lee County Public Safety
+dkulpanowski@leegov.com
+239-910-7968
+
+This data starts at 1 January 2008 and ends at 20 February 2019. The dataset contains 17,465 observations. Each row is an incident. An incident is a single event such as a motor vehicle collission at First and Main streets. Sent to this MVC at First and Main streets can be two fire apppartus, two police squad cars to direct traffic and issue a ticket, and three ambulances to transport the three patients who are hurt to the hospital. These are counted as seven responses to this single incident. 
+
+The data provided  does not contain information on how many responses occured. Only the singular incident.
+
+
+
+-) FireAgency1, name of the fire agency.
+-) UniqueEventNumber, event number for the incident. You can parse this out such as 'FCW170426040678' is Fire county wide. The next two characters 17 are the year (2017 in this case). The next two digits 04 are the month (April in this case). the next two digits are the day of the month (26 in this case. The remaining digits are auto-increment for the event. This would be the 40,678 event of the year. 
+-) Address, this is the location of the incident. You should be able to tie this back to the property appraiser data.
+-) Longitude the xy coordinates are projected as Florida State Plane West Feet. 
+-) Latitude
+-) IncidentLocationDescription describes the building
+-) CrossStreet1 indicates the first cross street
+-) CrossStreet2 indicates the second cross street
+-) ApartmentNumber is the number of the apartment if it is a residential address
+-) TimeIncidentCreated is the date/time stamp when the dispatcher creates the incident within our dispatch system. 
+-) timeCrewNotifiedOfIncident is the date/time when the emergency fire fighters were told of the incident. Also known as dispatch time.
+-) TimeCrewArrivesAtIncident is the date/time the first apparatus rolls up to the incident. The time between the dispatch time and the arrival time is called the response time.
+-) timeIncidentClosed is the date/time when the incident was closed out in the CAD software. The fire is out and the patients have been transported to the hospital. Now the crews are allowed to return back to base and freed up for other calls.
+-) City, these should all be FM or City of Fort Myers
+-) FireAgency, these should all be FM
+-) IncidentTypeCode is the numeric code of the type of Incident. You will see two different schemas of incident types in this data set. The first one is Lee County proprietary system where we created our own incident type designations. The second schema is from the FPDS or MPDS: Fire and Medical Priority Dispatch System. Within the MPDS / FPDS there is an integer and then a letter (A, O, B, C, D, E). The A is very low priority. The O is like saying 'get to it when you have nothing else to do'. The B and the C are middle priority. The D and the E are high priority and immediate priority. 
+
+-) IncidentTypeDescription is an english language description of the incident. Once again, there are two schemas in this data set depending on the date.
+-) dispositionCode explains the final status of the incident. Was it cleared, completed. Was no patient found?
+-) DispositionDescription is a plain english explanation of the final status of the incident.
+-) FireAgency these should all be FMFD
+-) EmergencyApparatus is the name of the first fire truck or ambulance to arrive on the scene.

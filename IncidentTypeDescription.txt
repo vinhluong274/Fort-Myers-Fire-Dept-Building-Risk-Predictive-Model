@@ -1,0 +1,29 @@
+incident type dictionary
+Ok, not really a dictionary since there are only two fields
+
+20 February 2019
+
+David Kulpanowski
+Lee County Public Safety
+dkulpanowski@leegov.com
+239-910-7968
+
+The first field is the type of the incidents contained in our dispatch database. These are every type of incident we respond to. Are there any other types of incidents you would like to include?
+
+This dataset includes
+-) structure fires
+-)  fire alarms
+-) outside fires
+-) electrical hzards
+-) smoke investigations
+-) alarms
+-) fuel spills
+-) gas leaks
+
+If you look through the file provided (IncidentTypeDescription.csv) you may find other types of events you would like included. Contact me and I can bring them in.
+
+The SQL Query to obtain this data is included
+
+I can't provide medical incidents to you because we are bound by HIPAA rules.
+
+The second column is a count of how many times these types occured.
