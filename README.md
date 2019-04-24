@@ -3,9 +3,10 @@ This repository contains the necessary files to train, test, and deploy a decisi
  
 To run this code, make sure all requirements are installed on your virtual machine. These are listed in the requirements.txt file. 
 
-To update the data within this model, we have included UMInformationScienceProject.sql file which contains the exact query used to obtain the data we used. Please contact  Richard Calkins from City of Fort Myers GIS department to request updated data. 
-In order to edit/update this the interactive map, the following need to be obtained: 
-Create a Plotly account and generate an API Key: https://plot.ly/python/getting-started/
+To update the data within this model, we have included UMInformationScienceProject.sql file which contains the exact query used to obtain the data we used. Please contact  Richard Caulkins from City of Fort Myers GIS department to request updated data. 
+
+In order to edit/update this the interactive map, the following need to be obtained: <br>
+Create a Plotly account and generate an API Key: https://plot.ly/python/getting-started/ <br>
 Create a Mapbox account and get an access token: https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 
 
