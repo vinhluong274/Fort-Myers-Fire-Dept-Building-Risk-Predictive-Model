@@ -3,7 +3,7 @@
 
 # # Fort Myers Fire Department: Risk Identification Model
 
-# In[23]:
+# In[40]:
 
 
 #importing all the libraries and functions we'll need.
@@ -42,8 +42,6 @@ from sklearn.metrics import accuracy_score
 import pickle
 
 import seaborn as sns
-# sns.set(style='white', color_codes=True, font_scale=2)
-# sns.set(rc={'figure.figsize':(20,14)})
 sns.set(rc={'figure.figsize':(12,8)})
 rc={'font.size': 20, 'axes.labelsize': 20, 'legend.fontsize': 18, 
     'axes.titlesize': 20, 'xtick.labelsize': 18, 'ytick.labelsize': 18}
@@ -52,7 +50,7 @@ sns.set(rc=rc)
 
 # ## Loading & Preparing Datasets
 
-# In[2]:
+# In[3]:
 
 
 #violations data prep
@@ -94,10 +92,10 @@ violations['violationScore'] = pd.cut(violations['total_violations'], violationB
 violations.head()
 
 
-# In[3]:
+# In[59]:
 
 
-#Cleaning and prepping the 'CFM' dataset which contains parcel details
+#Cleaning and prepping the 'CFM' dataset which contains PARCEL DETAILS
 cfm = pd.read_csv('CFM_Parcels.csv')
 
 #Excluding columns that are irrelevant
@@ -123,11 +121,12 @@ cfm.NewBuilt = cfm.NewBuilt.apply(lambda x: oneHot(x))
 
 cfm = cfm.fillna(0)
 cfm['Age'] = int(datetime.datetime.now().year) - ((cfm.MaxBuiltYear + cfm.MinBuiltYear)/2)
+cfm['Age'].values[cfm['Age'] > 200] = 0 #some buildings don't have built year data, set them to 0
 
 cfm.head()
 
 
-# In[4]:
+# In[44]:
 
 
 #Doing the same with the 'Addresses' dataset
@@ -139,7 +138,7 @@ adds.columns = ['Updated', 'Add_Number', 'StreetName', 'StN_PosTyp', 'Post_Code'
 adds.head()
 
 
-# In[5]:
+# In[45]:
 
 
 #Cleaning and prepping the 'Historical Fire Incidents' dataset which contains records of past fires
@@ -160,7 +159,7 @@ fires.head()
 # ## Defining Risk within the Data
 # In our model, we define building risk as the combination of how frequent a building has fire calls as well as the duration those fire calls last. Buildings with more frequent calls are likely to be of higher risk as more incidents are occurring at the address. While shorter fire call durations indicate false alarms and small incidents, longer fire call durations indicate a higher risk incident and situation. Combining these metrics we can define a general measure of risk. 
 
-# In[6]:
+# In[46]:
 
 
 #Deriving fire call duration and frequency from the fire history dataset.
@@ -191,7 +190,7 @@ merged.head()
 # ### Calculating Risk
 # Now that we've created the necessary features within the dataset for risk calculation, we can assign risk scores to each building.
 
-# In[7]:
+# In[47]:
 
 
 #Calculating Risk For the Model
@@ -218,7 +217,7 @@ merged.head()
 # ## Assigning Overall Risk Scores
 # Now that we given a frequency score and duration score to each address in our fire incidents dataset, we can average them to obtain an overall score, which will serve as the risk score we train our model on.
 
-# In[8]:
+# In[48]:
 
 
 #Making sure all columns are of the same datatype.
@@ -239,14 +238,14 @@ merged = pd.merge(merged, riskScores, on='Address')
 merged.head()
 
 
-# In[9]:
+# In[49]:
 
 
 #Bucketing risk scores into a classification between 1 and 9, 1 being low risk, 9 being highest risk.
 merged['riskClassification'] = pd.cut(merged.overallRisk, [0,1,2,3,4,5,6,7,8,9] , right=True, include_lowest=True, labels=[1,2,3,4,5,6,7,8,9])
 
 
-# In[10]:
+# In[50]:
 
 
 merged.drop_duplicates('Address').riskClassification.value_counts(sort=False)
@@ -255,7 +254,7 @@ merged.drop_duplicates('Address').riskClassification.value_counts(sort=False)
 # ## Preparing the Model
 # Now that we have the necessary features and scores to train the model, we can begin training and testing it. 
 
-# In[11]:
+# In[51]:
 
 
 #Only including the data fields that will help us identify the building or be useful for the model as a feature
@@ -273,7 +272,7 @@ modelData.head()
 # ## Training & Tuning the Model
 # In order to find the best parameters to run our model at, we wrote the depthTuning function below that finds runs the model and checks accuracies to compare. 
 
-# In[48]:
+# In[53]:
 
 
 #Create a list to store accuracies of each depth value tested.
@@ -314,6 +313,11 @@ for d in range(1,31):
     accuracies.append(depthTuning(d))
 
 #Plot the average accuracy for each max_tree depth value to identify the best one. 
+sns.set(rc={'figure.figsize':(12,8)})
+rc={'font.size': 20, 'axes.labelsize': 20, 'legend.fontsize': 18, 
+    'axes.titlesize': 20, 'xtick.labelsize': 18, 'ytick.labelsize': 18}
+sns.set(rc=rc)
+
 plt = pd.DataFrame({'Accuracy':accuracies, 'Max Depth': range(1,31)},)
 sns.lineplot(y=plt['Accuracy'], x=plt['Max Depth'], color='b')
 
@@ -321,7 +325,7 @@ sns.lineplot(y=plt['Accuracy'], x=plt['Max Depth'], color='b')
 # ## Running the Model on the Idenified Parameters
 # Now that we identified the best depths to run the model at, we train and test the model at those set parameters. 
 
-# In[51]:
+# In[52]:
 
 
 train, test = train_test_split(modelData, test_size=.25)
@@ -361,7 +365,7 @@ print("Accuracy: {0:.2%}".format(accuracy))
 # ## Feature Importance
 # Seeing that the model was successful and accurate at predicting risk, we can check to see which features were most inclfuenced risk.
 
-# In[52]:
+# In[54]:
 
 
 #Graphing the most important features
@@ -375,7 +379,7 @@ sns.barplot(x=plt['Feature Importance'], y=plt.index, color='y')
 # ## Using our Model on Commercial Buildings
 # Now that we've trained the model on the features above, we can use it to predict commercial and multi-fam buildings' risk scores.
 
-# In[53]:
+# In[55]:
 
 
 #First we need to generate a dataset of all commercial and multi-fam buildings. 
@@ -405,7 +409,7 @@ commercial = commercial.drop_duplicates('Address')
 commercial.head()
 
 
-# In[54]:
+# In[56]:
 
 
 #Let the model predict on the commercial set of buildings
@@ -413,7 +417,7 @@ commercial['Predicted Risk Score'] = model.predict(commercial[features])
 commercial[['Address', 'Predicted Risk Score']].head()
 
 
-# In[55]:
+# In[57]:
 
 
 #Graph and visualize the distribution of risk scores
@@ -429,7 +433,7 @@ for p in ax.patches:
 # ## Exporting to Excel
 # We can export these results to an excel spreadsheet that teh FMFD inspectors and firefighters can reference when doing their inspections.
 
-# In[30]:
+# In[58]:
 
 
 #Including only features that may be useful to inspectors and firefighters
@@ -525,9 +529,3 @@ py.iplot(fig, filename='FMFD Interactive Building Risk Map')
 
 
 # #### View Full Interactive Map here: https://plot.ly/~fortmyersfiredept/2
-
-# In[ ]:
-
-
-
-
