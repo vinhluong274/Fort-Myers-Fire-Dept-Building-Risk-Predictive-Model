@@ -12,6 +12,7 @@ Create a Mapbox account and get an access token: https://docs.mapbox.com/help/ho
 
 The following provides documents a high-level overview of our methods and implementation: 
 ## Loading & Preparing Datasets
+We used four datasets in this analysis: violations, fire incidents, addresses, and parcel details. These files are included along with an sql file containing the queries used to obtain them. 
 
 ## Defining Risk within the Data
 In our model, we define building risk as the combination of how frequent a building has fire calls as well as the duration those fire calls last. Buildings with more frequent calls are likely to be of higher risk as more incidents are occurring at the address. While shorter fire call durations indicate false alarms and small incidents, longer fire call durations indicate a higher risk incident and situation. Combining these metrics we can define a general measure of risk. 
